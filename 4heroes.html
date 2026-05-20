@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五年级历史单元评估：保卫国土的抗争</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;    /* 经典深蓝灰 */
+            --accent-color: #1a5276;     /* 测评规范蓝 */
+            --bg-color: #f4f6f9;         /* 试卷背景色 */
+            --card-bg: #ffffff;
+            --text-color: #2d3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 顶部看板 */
+        .header-banner {
+            background: linear-gradient(135deg, var(--primary-color), #111a24);
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .header-banner h1 {
+            margin: 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .header-banner p {
+            margin: 10px 0 15px 0;
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+        .score-board {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.12);
+            padding: 10px 25px;
+            border-radius: 4px;
+            font-size: 20px;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* 试卷主容器 */
+        .exam-container {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        /* 难度分段横幅 */
+        .level-title {
+            background-color: #e5e8e8;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            border-left: 5px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 题目卡片样式 */
+        .quiz-card {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 3px solid #bdc3c7;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-card.answered-correct { border-top-color: #27ae60; background-color: #f4faf6; }
+        .quiz-card.answered-wrong { border-top-color: #c0392b; background-color: #fdf4f4; }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f2f4f4;
+            padding-bottom: 10px;
+        }
+
+        .quiz-tag {
+            font-size: 14px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .tts-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tts-btn:hover { text-decoration: underline; }
+
+        .question-text {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        /* 领袖图像样式 */
+        .leader-img {
+            display: block;
+            max-width: 180px;
+            height: auto;
+            margin: 15px 0;
+            border: 1px solid #d5dbdb;
+            border-radius: 4px;
+            padding: 4px;
+            background-color: #fff;
+        }
+
+        /* 选项布局列表 */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background-color: #fdfefe;
+            border: 1px solid #d5dbdb;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        .option-item:hover { background-color: #f2f4f4; border-color: #bdc3c7; }
+        .option-item input { margin: 0; transform: scale(1.1); cursor: pointer; }
+
+        /* 点击式填空/选择块 */
+        .click-gap-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #f8f9f9;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px dashed #b2babb;
+        }
+        .click-block {
+            padding: 6px 14px;
+            background: #fff;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .click-block.selected {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* 检查按钮 */
+        .action-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .action-btn:hover { background-color: #113f5c; }
+
+        /* 实时反馈 */
+        .feedback-msg {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
+        .feedback-msg.show-success { display: block; background-color: #e8f8f5; color: #117a65; border: 1px solid #a3e4d7; }
+        .feedback-msg.show-error { display: block; background-color: #f9ebea; color: #922b21; border: 1px solid #f5b7b1; }
+
+        /* 页脚声明 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #95a5a6;
+            font-size: 13px;
+            border-top: 1px solid #e5e8e8;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-banner">
+        <h1>五年级历史单元总评估：保卫国土的抗争</h1>
+        <p>本试卷严格围绕四位地方领袖史料设计，包含单项选择、正误判断与点击选填，无须书写输入。</p>
+        <div class="score-board">
+            <i class="fa-solid fa-square-poll-horizontal"></i>
+            <span>当前评估得分: <span id="total-score">0</span> / 300 分</span>
+        </div>
+    </div>
+
+    <div class="exam-container">
+        
+        <div class="level-title"><i class="fa-solid fa-layer-group"></i> 第一部分：基础史实认知（第1 - 10题）</div>
+        <div id="section-1"></div>
+
+        <div class="level-title"><i class="fa-solid fa-layer-group"></i> 第二部分：抗争因果分析（第11 - 20题）</div>
+        <div id="section-2"></div>
+
+        <div class="level-title"><i class="fa-solid fa-layer-group"></i> 第三部分：综合深度研判（第21 - 30题）</div>
+        <div id="section-3"></div>
+
+    </div>
+
+    <div class="footer">小学五年级历史学业水平成果评估 • 本地数据互动版</div>
+
+    <script>
+        // 30道严格依据4位地方领袖史料、无提示、选项全中文的结构化题库
+        const megaQuizData = [
+            // ==================== 基础题（1-10题） ====================
+            {
+                id: 1, type: 'MC', section: 1, img: 'DolSaid.jpeg',
+                q: '根据所提供的历史文献图像，该名领袖曾利用游击战术在1831年成功击退英国军队，他是谁？',
+                options: ['A. 拿督马哈拉惹里拉', 'B. 沙里夫马莎荷', 'C. 多赛益', 'D. 仁答'],
+                a: 'C'
+            },
+            {
+                id: 2, type: 'MC', section: 1, img: 'Rentap.jpeg',
+                q: '观察图像，该名领袖被称为“地球之盾”，曾带领伊班人退守圣修山，他是谁？',
+                options: ['A. 仁答', 'B. 多赛益', 'C. 沙里夫马莎荷', 'D. 拿督马哈拉惹里拉'],
+                a: 'A'
+            },
+            {
+                id: 3, type: 'MC', section: 1, img: 'SharifM.jpeg',
+                q: '该名图像中的地方领袖来自砂拉越伊根村，并担任泗里街的统治酋长，他是谁？',
+                options: ['A. 多赛益', 'B. 仁答', 'C. 沙里夫马莎荷', 'D. 拿督马哈拉惹里拉'],
+                a: 'C'
+            },
+            {
+                id: 4, type: 'MC', section: 1, img: 'DtkMLela.jpeg',
+                q: '图像所示的领袖是霹雳州八大酋长之一，负责管理巴西沙哇区域，他是谁？',
+                options: ['A. 拿督马哈拉惹里拉', 'B. 多赛益', 'C. 仁答', 'D. 沙里夫马莎荷'],
+                a: 'A'
+            },
+            {
+                id: 5, type: 'TF', section: 1,
+                q: '正误题：多赛益在1831年发动的首场南宁战役中，成功联合了林茂等地的马来酋长。',
+                a: '对'
+            },
+            {
+                id: 6, type: 'TF', section: 1,
+                q: '正误题：英国参政司毕治推行税收新政和干涉本土风俗的行政中心位于南宁。',
+                a: '错'
+            },
+            {
+                id: 7, type: 'TF', section: 1,
+                q: '正误题：仁答为了抵抗詹姆斯·布洛克的扩张，在其大本营圣修山建造了坚固的铁木堡垒。',
+                a: '对'
+            },
+            {
+                id: 8, type: 'TF', section: 1,
+                q: '正误题：沙里夫马莎荷在反抗运动中结成的重要盟友是拿督巴丁宜阿都嘉夫。',
+                a: '对'
+            },
+            {
+                id: 9, type: 'CLICK', section: 1,
+                q: '【点击选填】英国殖民者强行要求南宁交出十分之一的_______，引发了多赛益的强烈抗议。',
+                pool: ['铁木资源', '土著奴隶', '税收或产量', '香料种子'],
+                a: '税收或产量'
+            },
+            {
+                id: 10, type: 'CLICK', section: 1,
+                q: '【点击选填】詹姆斯·布洛克在_______建造防御堡垒，用以监控和打压仁答等本地伊班人的势力。',
+                pool: ['巴西沙哇', '加拿大逸', '林茂', '伊根村'],
+                a: '加拿大逸'
+            },
+
+            // ==================== 进阶题（11-20题） ====================
+            {
+                id: 11, type: 'MC', section: 2,
+                q: '在1832年的南宁第二次战役中，英国军队能够反败为胜的根本策略是什么？',
+                options: ['A. 动用了1200名士兵，并利诱分化了多赛益的马来盟友', 'B. 采用海上战舰对南宁内陆实施全面封锁', 'C. 派遣特使说服多赛益主动交出统治权', 'D. 联合了砂拉越的布洛克军队共同夹击'],
+                a: 'A'
+            },
+            {
+                id: 12, type: 'TF', section: 2,
+                q: '正误题：詹姆斯·布洛克之所以宣布沙里夫马莎荷为叛军，是因为马莎荷拒绝交出泗里街的统治权。',
+                a: '对'
+            },
+            {
+                id: 13, type: 'MC', section: 2,
+                q: '1875年11月，英国参政司毕治在巴西沙哇的双溪霹雳河边遇刺身亡。该项刺杀指令是由谁下达的？',
+                options: ['A. 瑟普东', 'B. 拿督马哈拉惹里拉', 'C. 苏丹阿都拉', 'D. 多赛益'],
+                a: 'B'
+            },
+            {
+                id: 14, type: 'TF', section: 2,
+                q: '正误题：查尔斯·布洛克在第三次攻打圣修山时，采取了焚烧沿途20处伊班人长屋的残酷手段。',
+                a: '对'
+            },
+            {
+                id: 15, type: 'MC', section: 2,
+                q: '1859年，沙里夫马莎荷率领起义军和战船，与布洛克军队展开激烈攻防战的地点是哪里？',
+                options: ['A. 圣修山大本营', 'B. 加拿逸的武吉拉让', 'C. 巴西沙哇河道', 'D. 南宁腹地'],
+                a: 'B'
+            },
+            {
+                id: 16, type: 'TF', section: 2,
+                q: '正误题：毕治在霹雳推行的行政举措完全尊重了当地苏丹和传统马来酋长原有的财税征收权。',
+                a: '错'
+            },
+            {
+                id: 17, type: 'MC', section: 2,
+                q: '多赛益在1831年的战役中，化整为零、神出鬼没地打击远道而来的英军，这种战术被称为什么？',
+                options: ['A. 现代化阵地对轰战', 'B. 海上包围封锁战', 'C. 游击战术', 'D. 城堡防御坚守战'],
+                a: 'C'
+            },
+            {
+                id: 18, type: 'TF', section: 2,
+                q: '正误题：1875年2月，苏丹阿都拉、拿督马哈拉惹里拉与多位酋长召开秘密集会，共同表达对英国干政的抗议。',
+                a: '对'
+            },
+            {
+                id: 19, type: 'CLICK', section: 2,
+                q: '【点击选填】仁答在圣修山战败后，率领残部撤退到乌鲁恩斯特拉克，并在那里保持不屈节操直至_______。',
+                pool: ['被英军逮捕处决', '向布洛克递交投降书', '因年迈而自然逝世', '乘船流亡至新加坡'],
+                a: '因年迈而自然逝世'
+            },
+            {
+                id: 20, type: 'CLICK', section: 2,
+                q: '【点击选填】沙里夫马莎荷的铁杆盟友拿督巴丁宜阿都嘉夫起义失败后，逃往苏门答腊，最终在_______被荷兰军队逮捕。',
+                pool: ['巴达维亚', '巴西沙哇', '南宁村', '古晋'],
+                a: '巴达维亚'
+            },
+
+            // ==================== 高阶题（21-30题） ====================
+            {
+                id: 21, type: 'MC', section: 3,
+                q: '对比四位领袖的最终历史结局，以下关于沙里夫马莎荷与多赛益的叙述，哪项符合事实？',
+                options: ['A. 两人皆在1877年被判处绞刑', 'B. 马莎荷遭到流放，而多赛益撤离战场后最终获得了英国的养老金安置', 'C. 他们成功驱逐了西方殖民者，恢复了领地主权', 'D. 两人双双在巴达维亚的监狱中绝食牺牲'],
+                a: 'B'
+            },
+            {
+                id: 22, type: 'TF', section: 3,
+                q: '正误题：1877年，拿督马哈拉惹里拉与刺客瑟普东被逮捕后，在法庭审判后被双双处以绞刑。',
+                a: '对'
+            },
+            {
+                id: 23, type: 'MC', section: 3,
+                q: '纵观地理空间与敌人性质，仁答与沙里夫马莎荷在砂拉越共同对抗的敌对势力是哪一个？',
+                options: ['A. 驻守马六甲的荷兰东印度公司', 'B. 强行侵占内陆的英国海峡殖民地政府', 'C. 统治砂拉越的白人拉惹布洛克家族', 'D. 企图南下扩张的暹罗军队'],
+                a: 'C'
+            },
+            {
+                id: 24, type: 'TF', section: 3,
+                q: '正误题：沙里夫马莎荷在反抗失败后，被布洛克政权剥夺了泗里街酋长职位，并被终身流放至新加坡。',
+                a: '对'
+            },
+            {
+                id: 25, type: 'MC', section: 3,
+                q: '将四位地方领袖的抗争爆发时间按照历史发展的先后顺序排列，正确的是哪一项？',
+                options: ['A. 多赛益 → 仁答 → 沙里夫马莎荷 → 拿督马哈拉惹里拉', 'B. 拿督马哈拉惹里拉 → 多赛益 → 仁答 → 沙里夫马莎荷', 'C. 多赛益 → 沙里夫马莎荷 → 拿督马哈拉惹里拉 → 仁答', 'D. 仁答 → 多赛益 → 沙里夫马莎荷 → 拿督马哈拉惹里拉'],
+                a: 'A'
+            },
+            {
+                id: 26, type: 'TF', section: 3,
+                q: '正误题：多赛益与拿督马哈拉惹里拉在西马对抗的西欧强权皆属于英国殖民势力。',
+                a: '对'
+            },
+            {
+                id: 27, type: 'MC', section: 3,
+                q: '分析四位地方领袖在抗争初期均能取得局部胜利、重创敌军的核心原因，主要是因为什么？',
+                options: ['A. 本地起义军配备了比西方更先进的连发火枪', 'B. 成功组建了本土联合阵线，且善用熟悉的复杂地形', 'C. 西方殖民者主动放弃抵抗并高举白旗', 'D. 获得了来自欧洲反殖民志愿军的巨额资金援助'],
+                a: 'B'
+            },
+            {
+                id: 28, type: 'CLICK', section: 3,
+                q: '【点击选填】拿督马哈拉惹里拉刺杀毕治的事件发生在_______年。',
+                pool: ['1831', '1853', '1875', '1877'],
+                a: '1875'
+            },
+            {
+                id: 29, type: 'CLICK', section: 3,
+                q: '【点击选填】综合全篇史料，导致四位地方领袖抗争中后期陷入被动乃至失败的最主要内部因素是_______。',
+                pool: ['起义军队完全缺乏粮食', '本土阵营内部受到殖民者利益诱惑而分化叛变', '平民百姓极度支持殖民者纳税', '领袖们自愿放弃领地主权'],
+                a: '本土阵营内部受到殖民者利益诱惑而分化叛变'
+            },
+            {
+                id: 30, type: 'MC', section: 3,
+                q: '虽然四位地方领袖的抗争活动未能取得最终统治权的胜利，但他们留给现代马来西亚社会最核心的价值是什么？',
+                options: ['A. 精湛的雨林铁木建筑与防御工事修筑技巧', 'B. 誓死捍卫国家主权与本土文化的爱国主义精神', 'C. 如何在战败后向英国政府争取高额生活津贴的谈判手段', 'D. 唯有向外移民流放才能获得幸福生活的历史启示'],
+                a: 'B'
+            }
+        ];
+
+        let totalScore = 0;
+        const recordStatus = {}; // 记录每道题的答题状态
+
+        // 渲染评估试卷
+        function buildQuiz() {
+            const sec1 = document.getElementById('section-1');
+            const sec2 = document.getElementById('section-2');
+            const sec3 = document.getElementById('section-3');
+
+            megaQuizData.forEach((item, index) => {
+                let cardHtml = `
+                    <div class="quiz-card" id="card-${item.id}">
+                        <div class="quiz-header">
+                            <span class="quiz-tag">测试题目：第 ${index + 1} 题</span>
+                            <button class="tts-btn" onclick="executeSpeech('第 ${index + 1} 题，${item.q.replace(/'/g, "\\'")}')">
+                                <i class="fa-solid fa-volume-high"></i> 🔊 听题
+                            </button>
+                        </div>
+                        <div class="question-text">${item.q}</div>
+                `;
+
+                // 如果该题包含领袖图像配图
+                if (item.img) {
+                    cardHtml += `<img src="${item.img}" alt="历史领袖" class="leader-img" />`;
+                }
+
+                if (item.type === 'TF') {
+                    cardHtml += `
+                        <div class="options-list">
+                            <label class="option-item"><input type="radio" name="ans-${item.id}" value="对"> ○ 正确</label>
+                            <label class="option-item"><input type="radio" name="ans-${item.id}" value="错"> × 错误</label>
+                        </div>
+                    `;
+                } else if (item.type === 'MC') {
+                    cardHtml += `<div class="options-list">`;
+                    item.options.forEach(opt => {
+                        cardHtml += `<label class="option-item"><input type="radio" name="ans-${item.id}" value="${opt[0]}"> ${opt}</label>`;
+                    });
+                    cardHtml += `</div>`;
+                } else if (item.type === 'CLICK') {
+                    cardHtml += `
+                        <div class="click-gap-container" id="gap-box-${item.id}">
+                            <input type="hidden" id="hide-ans-${item.id}" value="">
+                    `;
+                    item.pool.forEach(word => {
+                        cardHtml += `<span class="click-block" onclick="selectBlock(${item.id}, this, '${word}')">${word}</span>`;
+                    });
+                    cardHtml += `</div>`;
+                }
+
+                cardHtml += `
+                        <button class="action-btn" onclick="verifyResponse(${item.id})">提交核对</button>
+                        <div class="feedback-msg" id="msg-${item.id}"></div>
+                    </div>
+                `;
+
+                if (item.section === 1) sec1.innerHTML += cardHtml;
+                else if (item.section === 2) sec2.innerHTML += cardHtml;
+                else if (item.section === 3) sec3.innerHTML += cardHtml;
+            });
+        }
+
+        // 点击选词组件互动
+        window.selectBlock = function(id, element, word) {
+            const container = document.getElementById(`gap-box-${id}`);
+            const blocks = container.getElementsByClassName('click-block');
+            for (let b of blocks) {
+                b.classList.remove('selected');
+            }
+            element.classList.add('selected');
+            document.getElementById(`hide-ans-${id}`).value = word;
+        };
+
+        // 文本语音无障碍朗读
+        window.executeSpeech = function(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('当前浏览器不兼容文本转语音功能。');
+            }
+        }
+
+        // 答题实时校验引擎与积分同步机制（已完全隐藏Hint提示内容）
+        window.verifyResponse = function(id) {
+            const quiz = megaQuizData.find(x => x.id === id);
+            let userAns = '';
+
+            if (quiz.type === 'TF' || quiz.type === 'MC') {
+                const checked = document.querySelector(`input[name="ans-${id}"]:checked`);
+                if (checked) userAns = checked.value;
+            } else if (quiz.type === 'CLICK') {
+                userAns = document.getElementById(`hide-ans-${id}`).value;
+            }
+
+            if (!userAns) {
+                alert('提示：请先选择或填选该道试题的答案。');
+                return;
+            }
+
+            const card = document.getElementById(`card-${id}`);
+            const feedback = document.getElementById(`msg-${id}`);
+            const isCorrect = (userAns === quiz.a);
+
+            if (isCorrect) {
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>评估反馈：</strong>答案正确。完美掌握该项史实。 [分值 +10]`;
+                feedback.className = "feedback-msg show-success";
+                card.className = "quiz-card answered-correct";
+
+                if (recordStatus[id] !== 'CORRECT') {
+                    totalScore += 10;
+                    recordStatus[id] = 'CORRECT';
+                    emitBeep(660, 0.1); 
+                }
+            } else {
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>评估反馈：</strong>答案有误。请重新研判试题。`;
+                feedback.className = "feedback-msg show-error";
+                card.className = "quiz-card answered-wrong";
+
+                if (recordStatus[id] !== 'CORRECT') {
+                    if (totalScore >= 2) totalScore -= 2; 
+                    emitBeep(330, 0.25); 
+                }
+            }
+
+            document.getElementById('total-score').innerText = totalScore;
+        };
+
+        // 电子提示音效果合成器
+        function emitBeep(freq, dur) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                osc.start();
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                osc.stop(audioCtx.currentTime + dur);
+            } catch (e) {
+                console.log('Audio disabled');
+            }
+        }
+
+        window.onload = buildQuiz;
+    </script>
+</body>
+</html>
